@@ -1,0 +1,30 @@
+use dioxus::logger::tracing::{error, Level};
+use dioxus::prelude::*;
+
+fn main() {
+    dioxus::logger::init(Level::INFO).expect("logger failed to init");
+
+    std::panic::set_hook(Box::new(|info| error!("Panic Occured\n{}", info)));
+
+    launch(app);
+}
+
+const DATA: &[u8] = include_bytes!("../../../data.txt");
+
+use std::sync::LazyLock;
+
+#[component]
+fn app() -> Element {
+    static URL: LazyLock<String> = LazyLock::new(|| {
+        let js_bytes = js_sys::Uint8Array::from(DATA);
+        let js_array = js_sys::Array::new();
+        js_array.push(&js_bytes);
+        let blob = web_sys::Blob::new_with_u8_array_sequence(&js_array).unwrap();
+        let url = web_sys::Url::create_object_url_with_blob(&blob).unwrap();
+        url
+    });
+    let url = URL.as_str();
+    rsx! {
+        a { href: url,download:"data.txt", "Save me !" }
+    }
+}

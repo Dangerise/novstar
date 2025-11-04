@@ -1,0 +1,9 @@
+/target
+
+/.zed
+/out
+
+*.bin
+*.db
+*.tmp
+out.txt
