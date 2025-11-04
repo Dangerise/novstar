@@ -11,8 +11,11 @@ pub fn search_bar() -> Element {
     const STYLE: Asset = asset!("assets/search.css");
 
     let search = move || {
-        let state: Signal<State> = use_context();
-        let pattern = state.read().as_ready().unwrap().pattern.clone();
+        let mut state: Signal<State> = use_context();
+        let mut state = state.write();
+        let state = state.as_ready_mut().unwrap();
+        let pattern = state.pattern.clone();
+        state.searched_pattern = pattern.clone();
         let mut search_engine: Resource<Engine> = use_context();
         tracing::info!("search {}", pattern);
         let pattern: Vec<&str> = pattern.split_whitespace().collect();
@@ -79,7 +82,7 @@ pub fn result_display() -> Element {
     let results = rd.results.as_slice();
 
     let state: Signal<State> = use_context();
-    let searched_pattern = state.read().as_ready().unwrap().pattern.clone();
+    let searched_pattern = state.read().as_ready().unwrap().searched_pattern.clone();
 
     rsx! {
         document::Stylesheet { href: asset!("assets/result.css") }
