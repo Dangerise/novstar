@@ -8,9 +8,13 @@ edition = "2021"
 
 [dependencies]
 bincode = "2.0.1"
-dioxus = { version = "0.6.0" }
-dioxus-logger = "0.7.0"
+dioxus = { version = "0.7.0" }
+enum-extract-error = "0.1.1"
+enum-extract-macro = "0.1.1"
+futures-util = "0.3.31"
+human_bytes = "0.4.3"
 js-sys = "0.3.82"
+reqwest = { version = "0.12.24", features = ["stream"] }
 scan={path="../"}
 web-sys = { version = "0.3.82", features = ["Blob", "BlobPropertyBag", "Url", "HtmlAnchorElement", "Document", "Window"] }
 web-time = "1.1.0"

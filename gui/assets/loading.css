@@ -1,0 +1,99 @@
+.loading {
+    /* 容器样式 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /*justify-content: center;*/
+    min-height: 100vh;
+    width: 100%;
+    background-color: #f8fafc;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.loading h1:first-child {
+    /* 进度文本样式 */
+    font-family: "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    /* 进度变化动画 */
+    transition: color 0.3s ease;
+}
+
+.loading h1:first-child:hover {
+    color: #3b82f6;
+}
+
+.loading h1:last-child {
+    /* "Waiting"文本样式 */
+    font-family: "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #64748b;
+    text-align: center;
+    /* 呼吸动画 */
+    animation: breathe 2s ease-in-out infinite;
+}
+
+/* 进度条容器：强制显示背景，固定宽度 */
+.progress-bar-container {
+    width: 80%; /* 占容器80%宽度，确保可见 */
+    max-width: 500px;
+    height: 14px; /* 增加高度，更容易看到 */
+    background-color: #eee; /* 浅灰色背景，明显区分 */
+    border: 1px solid #ddd; /* 边框，强化轮廓 */
+    border-radius: 7px;
+    overflow: hidden; /* 确保进度条不超出容器 */
+}
+
+/* 进度条：强制显示颜色和初始状态 */
+.progress-bar {
+    height: 100%;
+    background-color: #4299e1; /* 亮蓝色，确保与背景区分 */
+    width: 0%; /* 初始宽度0，由Dioxus动态更新 */
+    transition: width 0.3s ease; /* 平滑动画 */
+}
+
+/* 呼吸动画效果 */
+@keyframes breathe {
+    0%,
+    100% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}
+
+/* 进度达到100%时的样式变化 */
+.loading h1:first-child:contains("99%") {
+    color: #10b981;
+    animation: success 1s ease-in-out;
+}
+
+@keyframes success {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .loading h1:first-child {
+        font-size: 2rem;
+    }
+    .loading h1:last-child {
+        font-size: 1.5rem;
+    }
+}
