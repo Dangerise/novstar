@@ -82,15 +82,8 @@ body {
     transform: translateY(-50%) scale(0.98);
 }
 
-/* 搜索结果区域 */
-.search-results {
-    background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
-    padding: 20px;
-}
 
-.results-item select {
+/*.results-item select {
     color: red;
     height: 100px;
     width: 1000px;
@@ -107,7 +100,6 @@ body {
     font-size: 14px;
 }
 
-/* 结果项样式 */
 .result-item {
     margin-bottom: 35px;
     padding-bottom: 35px;
@@ -120,7 +112,6 @@ body {
     border-bottom: none;
 }
 
-/* 突出显示标题 */
 .result-title {
     font-size: 22px;
     margin-bottom: 12px;
@@ -140,7 +131,6 @@ body {
     display: block;
 }
 
-/* 完整内容展示区域 */
 .result-content {
     color: #333;
     font-size: 16px;
@@ -161,4 +151,4 @@ body {
     font-size: 13px;
     padding-top: 15px;
     border-top: 1px dashed #eee;
-}
+}*/

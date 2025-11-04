@@ -1,0 +1,134 @@
+/* 搜索结果区域 */
+.search-results {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+    padding: 20px;
+    
+    /* 限制最大宽度，避免过宽 */
+    max-width: 1000px; /* 根据内容调整，建议比内部 .result-item 的 max-width 稍大 */
+    width: 100%; /* 小屏幕时占满可用宽度 */
+    margin: 0 auto; /* 水平居中 */
+    box-sizing: border-box; /* 确保 padding 不会增加总宽度 */
+}
+
+.search-results__hint {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    font-size: 0.95rem; /* 小于正文，体现辅助性 */
+    color: #64748b; /* 浅灰色，不抢主体内容风头 */
+    font-weight: 500; /* 轻微加粗，比纯正文突出一点 */
+    margin: 0 0 1.5rem 0; /* 底部留足间距，与下方结果分隔 */
+    padding-bottom: 0.5rem; /* 底部轻微内边距，配合可选的分隔线 */
+    border-bottom: 1px solid #f1f5f9; /* 浅色底部分隔线，强化区域划分 */
+    letter-spacing: 0.2px; /* 微调字间距，提升可读性 */
+}
+
+/* 响应式调整（小屏幕优化） */
+@media (max-width: 640px) {
+    .search-results__hint {
+        font-size: 0.9rem; /* 小屏幕缩小字号 */
+        margin-bottom: 1.2rem; /* 减小底部间距，节省空间 */
+        padding-bottom: 0.3rem;
+    }
+}
+
+.result-item {
+    /* 容器基础样式 */
+    max-width: 800px; /* 限制最大宽度，避免宽屏文字过长影响阅读 */
+    width: 100%;
+    margin: 1.5rem auto; /* 上下间距，水平居中 */
+    padding: 1.2rem 1.5rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* 轻微阴影增强层次感 */
+    box-sizing: border-box;
+}
+
+/* 标题样式 */
+.result-title {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #1e293b; /* 深灰蓝色，稳重且易读 */
+    margin: 0 0 1rem 0; /* 底部留间距，与内容区分隔 */
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #f1f5f9; /* 浅色底部分隔线 */
+}
+
+/* 折叠面板容器 */
+.result-item details {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    color: #334155; /* 正文深色，确保可读性 */
+}
+
+/* 折叠面板标题（summary） */
+.result-item summary {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #475569;
+    cursor: pointer; /* 提示可点击 */
+    padding: 0.5rem 0;
+    list-style: none; /* 去除默认箭头 */
+    transition: color 0.2s ease;
+}
+
+/* 自定义折叠箭头（替代默认样式） */
+.result-item summary::before {
+    content: "▼"; /* 向下箭头 */
+    display: inline-block;
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+    color: #94a3b8;
+    transition: transform 0.2s ease;
+}
+
+/* 展开时箭头旋转 */
+.result-item details[open] summary::before {
+    transform: rotate(180deg);
+}
+
+/* 悬停效果 */
+.result-item summary:hover {
+    color: #3b82f6; /* 蓝色强调 */
+}
+
+/* 内容区样式（大量文字区域） */
+.result-item details > div {
+    padding: 1rem 0 0.5rem 1.3rem; /* 左缩进，与标题区分 */
+}
+
+/* 行文本样式 */
+.result-item p {
+    font-size: 0.95rem;
+    line-height: 1.6; /* 行高1.6，适合长文本阅读 */
+    margin: 0.8rem 0; /* 段落间距 */
+    color: #334155;
+}
+
+/* 分隔线样式 */
+.result-item hr {
+    border: none;
+    border-top: 1px solid #e2e8f0; /* 浅色分隔线，不抢眼 */
+    margin: 1.2rem 0; /* 上下留足空间 */
+}
+
+/* 响应式调整（小屏幕优化） */
+@media (max-width: 640px) {
+    .result-item {
+        padding: 1rem;
+        margin: 1rem 0.5rem; /* 减小左右间距 */
+    }
+    
+    .result-title {
+        font-size: 1.2rem;
+    }
+    
+    .result-item p {
+        font-size: 0.9rem;
+        line-height: 1.5; /* 小屏幕适当减小行高 */
+    }
+    
+    .result-item details > div {
+        padding-left: 0.8rem; /* 减小左缩进 */
+    }
+}

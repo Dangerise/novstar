@@ -2,9 +2,10 @@ use dioxus::logger::tracing::{self, error, Level};
 use dioxus::prelude::*;
 use human_bytes::human_bytes;
 
-async fn sleep() {
-    document::eval(include_str!("sleep.js")).await.unwrap();
-}
+// async fn sleep() {
+//     js_sys::Promise::new(|| web_sys::window().unwrap().set_timeout_with_str(""));
+//     document::eval(include_str!("sleep.js")).await.unwrap();
+// }
 
 fn main() {
     dioxus::logger::init(Level::INFO).expect("logger init");
@@ -151,10 +152,12 @@ fn app() -> Element {
             div { class: "loading",
                 h1 { "Downloading" }
                 div { class: "progress-bar-container",
-                    div { class: "progress-bar", style: "width: {percent*100.}%" }
+                    div {
+                        class: "progress-bar",
+                        style: "width: {percent*100.}%",
+                    }
                 }
-                 p { class: "progress-info", "{info}" }
-
+                p { class: "progress-info", "{info}" }
             }
         }
     }
@@ -238,8 +241,9 @@ fn result_display() -> Element {
     let searched_pattern: Signal<SearchedPattern> = use_context();
     let searched_pattern = searched_pattern.cloned().0;
     rsx! {
-        p { "The results of \'{searched_pattern}\'" }
+        document::Stylesheet { href: asset!("assets/result.css") }
         div { class: "search-results",
+            p { class: "search-results__hint", "The results of \'{searched_pattern}\'" }
             for result in results.iter().map(|x| x.clone()) {
                 div { class: "result-content",
                     display_book { result }
