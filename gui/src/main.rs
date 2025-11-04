@@ -1,12 +1,13 @@
 use dioxus::logger::tracing::{self, error, Level};
 use dioxus::prelude::*;
-use human_bytes::human_bytes;
 
 mod download;
 mod search;
 
 use download::*;
 use search::*;
+
+use human_bytes::human_bytes;
 
 fn main() {
     dioxus::logger::init(Level::INFO).expect("logger init");

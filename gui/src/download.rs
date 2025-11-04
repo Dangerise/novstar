@@ -90,10 +90,14 @@ pub fn download_page() -> Element {
         loaded,
         full,
     } = state.as_downloading().unwrap();
+    let mut speed = *speed;
     let percent = (*loaded as f32) / (*full as f32);
+    if speed > ((1u64 << 60u64) as f32) {
+        speed = 0.;
+    }
     let info = format!(
         "Speed : {}/s, {}/{}",
-        human_bytes(*speed),
+        human_bytes(speed),
         human_bytes(*loaded),
         human_bytes(*full)
     );
