@@ -1,4 +1,10 @@
-pub const COMPRESS_LEVEL: i32 = 3;
+mod data;
+pub use data::Data;
+
+mod engine;
+pub use engine::{Engine, SearchResult};
+
+pub const COMPRESS_LEVEL: i32 = 13;
 
 #[cfg(feature = "native")]
 use sqlx::{Connection, Row, SqliteConnection, sqlite::SqliteRow};
@@ -48,118 +54,4 @@ use bincode::{Decode, Encode};
 pub struct Comment {
     pub book_name: String,
     pub content: String,
-}
-
-#[derive(Debug, Clone, Default, Encode, Decode, PartialEq)]
-pub struct Data {
-    pub comments: Vec<Comment>,
-}
-
-impl Data {
-    #[cfg(feature = "native")]
-    pub async fn from_db(con: &mut SqliteConnection) -> eyre::Result<Self> {
-        let comments = sqlx::query("select * from comments")
-            .map(|row: SqliteRow| Comment {
-                book_name: row.get("book_name"),
-                content: row.get("content"),
-            })
-            .fetch_all(con)
-            .await?;
-        Ok(Data { comments })
-    }
-}
-
-// #[derive(Debug, Clone)]
-// pub struct Match {
-//     pub from: usize,
-//     pub score: i64,
-// }
-
-use std::collections::HashMap;
-
-#[derive(Debug, Clone, PartialEq)]
-pub enum SearchResult {
-    Name(String),
-    Id(usize),
-}
-
-#[derive(Debug, Clone)]
-pub struct SearchEngine<'a> {
-    pub data: &'a Data,
-    pub map: HashMap<&'a str, Vec<usize>>,
-    pub results: Vec<SearchResult>,
-}
-
-impl<'a> SearchEngine<'a> {
-    pub fn from_data(data: &'a Data) -> Self {
-        let mut map: HashMap<_, Vec<usize>> = HashMap::new();
-        for (idx, Comment { book_name, .. }) in data.comments.iter().enumerate() {
-            map.entry(book_name.as_str()).or_default().push(idx);
-        }
-        Self {
-            data,
-            map,
-            results: Default::default(),
-        }
-    }
-    pub fn get_book(&self, book_name: &str) -> Option<impl Iterator<Item = &str> + Clone> {
-        let iter = self
-            .map
-            .get(book_name)?
-            .iter()
-            .map(|&x| self.data.comments[x].content.as_str());
-        Some(iter)
-    }
-    pub fn search(&mut self, pattern: &[&str]) -> eyre::Result<()> {
-        let Self { data, map, results } = self;
-
-        results.clear();
-        for (&book_name, list) in map.iter() {
-            if book_name == "Other" {
-                continue;
-            }
-            if pattern.iter().all(|&pat| {
-                list.iter()
-                    .map(|&x| &data.comments[x].content)
-                    .any(|c| c.contains(pat))
-            }) {
-                results.push(SearchResult::Name(book_name.to_string()));
-            }
-        }
-
-        let list = map
-            .get("Other")
-            .ok_or_else(|| eyre::eyre!("Other nou found"))?
-            .iter()
-            .map(|&x| (x, data.comments[x].content.as_str()));
-        for (id, content) in list {
-            if pattern.iter().all(|&pat| content.contains(pat)) {
-                results.push(SearchResult::Id(id));
-            }
-        }
-        Ok(())
-    }
-    // pub fn fuzzy_search(&mut self, pattern: &str) -> eyre::Result<()> {
-    //     use fuzzy_matcher::{FuzzyMatcher, skim::SkimMatcherV2};
-    //     let matcher = SkimMatcherV2::default();
-
-    //     let Self { comments, results } = self;
-    //     results.clear();
-    //     for (idx, Comment { book_name, content }) in comments.iter().enumerate() {
-    //         let ret_book_name = matcher.fuzzy_match(book_name, pattern);
-    //         let ret_content = matcher.fuzzy_match(content, pattern);
-    //         if ret_book_name.is_some() || ret_content.is_some() {
-    //             results.push(Match {
-    //                 from: idx,
-    //                 score: i64::max(
-    //                     ret_book_name.unwrap_or(i64::MIN),
-    //                     ret_content.unwrap_or(i64::MIN),
-    //                 ),
-    //             });
-    //         }
-    //     }
-
-    //     results.sort_unstable_by(|x, y| x.score.cmp(&y.score));
-    //     Ok(())
-    // }
 }
