@@ -61,6 +61,7 @@ fn app() -> Element {
             full: 0,
         })
     });
+    use_context_provider(|| state);
 
     let mut st = state.clone();
     let search_engine = use_resource(move || async move {
@@ -118,14 +119,16 @@ fn app() -> Element {
 
         tracing::info!("future done");
 
+        st.set(State::Ready(ReadyState {
+            pattern: "".into(),
+            searched_pattern: "".into(),
+        }));
+
         engine
     });
 
     use_context_provider(|| search_engine);
     let search_engine: Resource<SearchEngine> = use_context();
-
-    let searched_pattern = use_signal(|| SearchedPattern(String::new()));
-    use_context_provider(|| searched_pattern);
 
     if search_engine.read().is_some() {
         rsx! {
@@ -167,14 +170,10 @@ fn app() -> Element {
 fn search_bar() -> Element {
     const STYLE: Asset = asset!("assets/search.css");
 
-    let mut pattern = use_signal(String::new);
-
-    let pt = pattern.clone();
     let search = move || {
-        let pattern = pt.read();
+        let state: Signal<State> = use_context();
+        let pattern = state.read().as_ready().unwrap().pattern.clone();
         let mut search_engine: Resource<SearchEngine> = use_context();
-        let mut searched_pattern: Signal<SearchedPattern> = use_context();
-        searched_pattern.set(SearchedPattern(pattern.cloned()));
         tracing::info!("search {}", pattern);
         let pattern: Vec<&str> = pattern.split_whitespace().collect();
         let mut write = search_engine.try_write().unwrap();
@@ -189,7 +188,8 @@ fn search_bar() -> Element {
                 class: "search-input",
                 placeholder: "输入书名",
                 onchange: move |event| {
-                    pattern.set(event.value());
+                    let mut state: Signal<State> = use_context();
+                    state.write().as_ready_mut().unwrap().pattern = event.value();
                 },
             }
             i { class: "fa fa-search search-icon" }
@@ -238,12 +238,15 @@ fn result_display() -> Element {
     let rd = (*rd).as_ref().unwrap();
     let results = rd.results.as_slice();
 
-    let searched_pattern: Signal<SearchedPattern> = use_context();
-    let searched_pattern = searched_pattern.cloned().0;
+    let state: Signal<State> = use_context();
+    let searched_pattern = state.read().as_ready().unwrap().pattern.clone();
+
     rsx! {
         document::Stylesheet { href: asset!("assets/result.css") }
         div { class: "search-results",
-            p { class: "search-results__hint", "The results of \'{searched_pattern}\'" }
+            if !searched_pattern.is_empty() {
+                p { class: "search-results__hint", "The results of \'{searched_pattern}\'" }
+            }
             for result in results.iter().map(|x| x.clone()) {
                 div { class: "result-content",
                     display_book { result }
