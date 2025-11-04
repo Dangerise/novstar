@@ -26,11 +26,32 @@ fn app() -> Element {
     let search_engine = use_signal(|| SearchEngine::from_data(&DATA));
     use_context_provider(|| search_engine);
 
-    rsx! {
-        h1 { "Search" }
-        search_bar {}
-        result_display {}
-    }
+    let searched_pattern = use_signal(|| SearchedPattern(String::new()));
+    use_context_provider(|| searched_pattern);
+
+    if search_engine.read().is_some() {
+        rsx! {
+            h1 { "Search" }
+            search_bar {}
+            result_display {}
+        }
+    } else {
+        let state = state.read();
+        let DownloadingState {
+            speed,
+            loaded,
+            full,
+        } = state.as_downloading().unwrap();
+        let percent = (*loaded as f32) / (*full as f32);
+        rsx! {
+            document::Stylesheet { href: asset!("assets/loading.css") }
+            div { class: "loading",
+                h1 { "Downloading" }
+            }
+        }
+    }div { class: "progress-bar-container",
+                div { class: "progress-bar", style: "width: {loaded}%" }
+            }
 }
 
 #[component]
