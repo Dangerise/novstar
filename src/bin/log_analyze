@@ -1,0 +1,21 @@
+use std::fs;
+fn main() -> eyre::Result<()> {
+    let str = fs::read_to_string(".log")?;
+    let mut state = [0u8; 34415];
+    for line in str.lines() {
+        let s = &line[40..];
+        if s.contains("/") {
+            continue;
+        }
+        // println!("{s}");
+        let mut it = s.split_whitespace();
+        let x: usize = it.next().unwrap().parse().unwrap();
+        state[x] += 1;
+    }
+    for i in 0..34415 {
+        if state[i] == 2 {
+            println!("{i},");
+        }
+    }
+    Ok(())
+}

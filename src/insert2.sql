@@ -1,0 +1,1 @@
+INSERT INTO comments (book_name,content) VALUES ($1,$2)

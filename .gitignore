@@ -7,3 +7,7 @@
 *.db
 *.tmp
 out.txt
+*.json
+
+tmp.txt
+*.log
