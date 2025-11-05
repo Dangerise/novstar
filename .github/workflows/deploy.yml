@@ -35,7 +35,7 @@ jobs:
 
       # 5. 安装Dioxus CLI（用于dx bundle）
       - name: 安装dioxus-cli
-        run: cargo install dioxus-cli
+        run: cargo binstall dioxus-cli
 
       # 6. 执行自定义部署命令（按你的顺序执行）
       - name: 执行清理、数据库初始化和构建
