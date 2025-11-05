@@ -16,10 +16,10 @@ pub fn search_bar() -> Element {
         let state = state.as_ready_mut().unwrap();
         let pattern = state.pattern.clone();
         state.searched_pattern = pattern.clone();
-        let mut search_engine: Resource<Engine> = use_context();
+        let mut engine: Resource<Engine> = use_context();
         tracing::info!("search {}", pattern);
         let pattern: Vec<&str> = pattern.split_whitespace().collect();
-        let mut write = search_engine.try_write().unwrap();
+        let mut write = engine.try_write().unwrap();
         (*write).as_mut().unwrap().search(&pattern).unwrap();
     };
 
@@ -42,25 +42,18 @@ pub fn search_bar() -> Element {
 }
 
 #[component]
-pub fn display_book(result: SearchResult) -> Element {
-    let search_engine: Resource<Engine> = use_context();
-    let search_engine = search_engine.value();
-    let rd = search_engine.read();
+pub fn display_book(result: String) -> Element {
+    let engine: Resource<Engine> = use_context();
+    let rd = engine.read();
     let rd = (*rd).as_ref().unwrap();
-    let (name, list) = match &result {
-        SearchResult::Id(id) => {
-            let data = rd.data;
-            ("Other", vec![data.comments[*id].content.as_str()])
-        }
-        SearchResult::Name(name) => (name.as_str(), rd.get_book(&name).unwrap().collect()),
-    };
-    let count = list.len();
+    let list=rd.get_book(&result).unwrap();
+    let count = list.clone().count();
     rsx! {
         div { class: "result-item",
-            h3 { class: "result-title", "{name}" }
+            h3 { class: "result-title", "{result}" }
             details {
                 summary { "共{count}扫书" }
-                for (idx , content) in list.into_iter().enumerate() {
+                for (idx , content) in list.enumerate() {
                     if idx > 0 {
                         hr {}
                     }
@@ -75,9 +68,9 @@ pub fn display_book(result: SearchResult) -> Element {
 
 #[component]
 pub fn result_display() -> Element {
-    let search_engine: Resource<Engine> = use_context();
-    let search_engine = search_engine.value();
-    let rd = search_engine.read();
+    let engine: Resource<Engine> = use_context();
+    let engine = engine.value();
+    let rd = engine.read();
     let rd = (*rd).as_ref().unwrap();
     let results = rd.results.as_slice();
 
@@ -90,7 +83,7 @@ pub fn result_display() -> Element {
             if !searched_pattern.is_empty() {
                 p { class: "search-results__hint", "The results of \'{searched_pattern}\'" }
             }
-            for result in results.iter().map(|x| x.clone()) {
+            for result in results.iter() {
                 div { class: "result-content",
                     display_book { result }
                 }

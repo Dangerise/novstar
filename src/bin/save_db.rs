@@ -1,4 +1,4 @@
-use scan::*;
+use northstar::*;
 use sqlx::{Connection, SqliteConnection};
 use std::fs;
 
@@ -6,6 +6,6 @@ use std::fs;
 async fn main() -> eyre::Result<()> {
     let mut con = SqliteConnection::connect("sqlite://data.db").await?;
     let data = Data::from_db(&mut con, false).await?;
-    fs::write("data.bin", data.encode())?;
+    fs::write("gui/data.bin", data.encode())?;
     Ok(())
 }

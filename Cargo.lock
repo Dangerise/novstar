@@ -3478,6 +3478,42 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "72ef4a56884ca558e5ddb05a1d1e7e1bfd9a68d9ed024c21704cc98872dae1bb"
 
 [[package]]
+name = "northstar"
+version = "0.1.0"
+dependencies = [
+ "bincode",
+ "dashmap",
+ "env_logger",
+ "eyre",
+ "jieba-rs",
+ "log",
+ "rayon",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "tokio",
+ "zstd",
+]
+
+[[package]]
+name = "northstar_gui"
+version = "0.1.0"
+dependencies = [
+ "bincode",
+ "dioxus",
+ "enum-extract-error",
+ "enum-extract-macro",
+ "futures-util",
+ "human_bytes",
+ "js-sys",
+ "northstar",
+ "reqwest",
+ "web-sys",
+ "web-time",
+ "zstd",
+]
+
+[[package]]
 name = "num-bigint-dig"
 version = "0.8.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4658,42 +4694,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "93fc1dc3aaa9bfed95e02e6eadabb4baf7e3078b0bd1b4d7b6b0b68378900502"
 dependencies = [
  "winapi-util",
-]
-
-[[package]]
-name = "scan"
-version = "0.1.0"
-dependencies = [
- "bincode",
- "dashmap",
- "env_logger",
- "eyre",
- "jieba-rs",
- "log",
- "rayon",
- "serde",
- "serde_json",
- "sqlx",
- "tokio",
- "zstd",
-]
-
-[[package]]
-name = "scan_gui"
-version = "0.1.0"
-dependencies = [
- "bincode",
- "dioxus",
- "enum-extract-error",
- "enum-extract-macro",
- "futures-util",
- "human_bytes",
- "js-sys",
- "reqwest",
- "scan",
- "web-sys",
- "web-time",
- "zstd",
 ]
 
 [[package]]

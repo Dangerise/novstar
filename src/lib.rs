@@ -2,9 +2,11 @@ mod data;
 pub use data::Data;
 
 mod engine;
-pub use engine::{Engine, SearchResult};
+pub use engine::Engine;
 
+#[cfg(feature = "native")]
 mod tag;
+#[cfg(feature = "native")]
 pub use tag::tag_analyze;
 
 mod sentence;
