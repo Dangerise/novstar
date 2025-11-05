@@ -7,7 +7,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    container: archlinux:lastest
+    container: 
+        image: archlinux:lastest
     permissions:
       contents: write  # 允许写入gh-pages分支
 
