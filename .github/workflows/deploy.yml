@@ -17,7 +17,7 @@ jobs:
 
       # 2. 安装sqlite3（用于执行数据库初始化命令）
       - name: 安装sqlite3
-        run: sudo apt-get update && sudo apt-get install -y sqlite3
+        run: sudo apt-get update && sudo apt-get install -y sqlite3 libsqlite3-mod-icu
 
       # 3. 配置Rust环境
       - name: 安装Rust工具链
