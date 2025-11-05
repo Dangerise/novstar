@@ -10,4 +10,5 @@ out.txt
 *.json
 
 tmp.txt
+dump
 *.log

@@ -62,6 +62,7 @@ impl Data {
                     delta.push(d as u8);
                 }
                 comment.words_cut = Some(delta);
+                assert_eq!(comment.words().unwrap(), words);
                 log::info!("{idx} done");
 
                 let mut lock = count.lock().unwrap();

@@ -13,10 +13,12 @@ async fn main() -> eyre::Result<()> {
         .target(env_logger::Target::Pipe(Box::new(log_file)))
         .init();
 
-    fs::File::create_new("data.db")?;
-    let data = Data::from_raw(&fs::read_to_string("./data.txt")?).await?;
+    let db = "tmp.db";
+
+    fs::File::create_new(db)?;
+    let data = Data::from_raw(&fs::read_to_string("./tmp.txt")?).await?;
     log::info!("Data inited");
-    let mut con = SqliteConnection::connect("sqlite://data.db").await?;
+    let mut con = SqliteConnection::connect(db).await?;
     data.save_db(&mut con).await?;
     Ok(())
 }

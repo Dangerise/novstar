@@ -4,10 +4,14 @@ use std::fs;
 
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
+    env_logger::init();
+    
     let mut con = SqliteConnection::connect("sqlite://data.db").await?;
     let data = Data::from_db(&mut con, true).await?;
+    
+    log::info!("data init");
 
-    let iter = data.comments.iter().take(300);
+    let iter = data.comments.iter();
     let res = tag_analyze(iter.collect());
 
     // dbg!(&res);
