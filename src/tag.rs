@@ -13,6 +13,8 @@ const STOP: &[&str] = &[
     "怎", "么", "、", "】", "【", "？", "?", "!", "！",
 ];
 
+const NEGATIVE_FIX: &[&str] = &["没有", "没", "不", "少", "无"];
+
 pub fn tag_analyze(all: Vec<&Comment>) -> DashMap<&str, u32> {
     let mut cap = 0;
     for s in all.iter().map(|c| &c.content) {

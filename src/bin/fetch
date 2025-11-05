@@ -1,0 +1,33 @@
+use scan::*;
+use sqlx::{Connection, SqliteConnection};
+use std::fs;
+
+#[tokio::main]
+async fn main() -> eyre::Result<()> {
+    env_logger::init();
+
+    // let text = "穿越";
+    let text = fs::read_to_string("data.txt")?;
+    let tags: Vec<(String, u32)> = serde_json::from_str(&fs::read_to_string("jb copy.json")?)?;
+    // let tags: Vec<(Vec<_>, u32)> = tags
+    //     .into_iter()
+    //     .map(|(x, y)| (x.chars().collect(), y))
+    //     .collect();
+
+    let mut writer = String::new();
+    for line in text.lines() {
+        let mut out = line.to_string();
+        for (tag, _) in &tags {
+            if line.contains(tag) {
+                out = out.replace(tag, &format!("|{}|", &tag));
+            }
+        }
+        if out != line {
+            writer.push_str(&out);
+            writer.push_str("\n\n");
+        }
+    }
+
+    fs::write("dump", &writer)?;
+    Ok(())
+}

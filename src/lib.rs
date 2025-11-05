@@ -7,6 +7,8 @@ pub use engine::{Engine, SearchResult};
 mod tag;
 pub use tag::tag_analyze;
 
+mod sentence;
+
 pub const COMPRESS_LEVEL: i32 = 13;
 
 #[cfg(feature = "native")]
