@@ -1,4 +1,4 @@
-use northstar::*;
+use novstar::*;
 use sqlx::{Connection, SqliteConnection};
 use std::fs;
 

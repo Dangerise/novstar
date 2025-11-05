@@ -3,7 +3,7 @@ members = ["./", "gui"]
 
 
 [package]
-name = "northstar"
+name = "novstar"
 version = "0.1.0"
 edition = "2024"
 authors = ["Dangerise <dangerise@qq.com>"]

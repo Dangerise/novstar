@@ -15,7 +15,7 @@ fn main() {
     launch(app);
 }
 
-use northstar::*;
+use novstar::*;
 use std::sync::OnceLock;
 
 #[derive(Debug, Clone, EnumExtract, PartialEq)]

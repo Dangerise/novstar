@@ -3478,7 +3478,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "72ef4a56884ca558e5ddb05a1d1e7e1bfd9a68d9ed024c21704cc98872dae1bb"
 
 [[package]]
-name = "northstar"
+name = "novstar"
 version = "0.1.0"
 dependencies = [
  "bincode",
@@ -3496,7 +3496,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "northstar_gui"
+name = "novstar_gui"
 version = "0.1.0"
 dependencies = [
  "bincode",
@@ -3506,7 +3506,7 @@ dependencies = [
  "futures-util",
  "human_bytes",
  "js-sys",
- "northstar",
+ "novstar",
  "reqwest",
  "web-sys",
  "web-time",

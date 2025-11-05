@@ -1,4 +1,4 @@
-name: 部署前端项目）
+name: 部署前端
 
 on:
   push:
@@ -51,15 +51,12 @@ jobs:
           cargo run --release --features native --bin save_db
           
           # 打包Dioxus项目（northstar_gui包，release模式）
-          dx bundle -p northstar_gui -r
+          dx bundle -p novstar_gui -r
 
       # 7. 部署到GitHub Pages（假设dx bundle输出到dist目录，根据实际情况调整）
       - name: 部署到GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: target/dx/nothstar_gui/release/web/public  
-          # 若dx bundle输出目录不同，需修改此处（如target/dx/bundle）
+          publish_dir: target/dx/novstar_gui/release/web/public  
           publish_branch: gh-pages
-
-            # 3. 缓存Cargo依赖（加速构建）

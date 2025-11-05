@@ -1,9 +1,9 @@
 [package]
-name = "northstar_gui"
+name = "novstar_gui"
 version = "0.1.0"
 edition = "2024"
 authors = ["Dangerise <dangerise@qq.com>"]
-description = "The GUI of Northstar"
+description = "The GUI of Novstar"
 license = "MIT"
 repository = "https://github.com/Dangerise/northstar"
 
@@ -18,7 +18,7 @@ futures-util = "0.3.31"
 human_bytes = { version = "0.4.3", features = ["si-units"] }
 js-sys = "0.3.82"
 reqwest = { version = "0.12.24", features = ["stream"] }
-northstar = { path = "../" }
+novstar = { path = "../" }
 web-sys = { version = "0.3.82", features = [
   "Blob",
   "BlobPropertyBag",
