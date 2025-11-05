@@ -1,0 +1,65 @@
+name: 部署前端项目）
+
+on:
+  push:
+    branches: [ "master" ]  # 推送到main分支时触发
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 允许写入gh-pages分支
+
+    steps:
+      # 1. 拉取仓库代码
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      # 2. 安装sqlite3（用于执行数据库初始化命令）
+      - name: 安装sqlite3
+        run: sudo apt-get update && sudo apt-get install -y sqlite3
+
+      # 3. 配置Rust环境
+      - name: 安装Rust工具链
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          components: rustfmt, clippy
+
+      # 4. 缓存Cargo依赖（加速构建）
+      - name: 缓存Rust依赖
+        uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: true
+
+      # 5. 安装Dioxus CLI（用于dx bundle）
+      - name: 安装dioxus-cli
+        run: cargo install dioxus-cli
+
+      # 6. 执行自定义部署命令（按你的顺序执行）
+      - name: 执行清理、数据库初始化和构建
+        run: |
+          # 清理旧文件
+          rm -f data.db
+          rm -rf target/dx
+          
+          # 初始化sqlite数据库
+          sqlite3 data.db ".read ./data.sql"
+          
+          # 运行release模式的save_db二进制（带native特性）
+          cargo run --release --features native --bin save_db
+          
+          # 打包Dioxus项目（northstar_gui包，release模式）
+          dx bundle -p northstar_gui -r
+
+      # 7. 部署到GitHub Pages（假设dx bundle输出到dist目录，根据实际情况调整）
+      - name: 部署到GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: target/dx/nothstar_gui/release/web/public  
+          # 若dx bundle输出目录不同，需修改此处（如target/dx/bundle）
+          publish_branch: gh-pages
+
+            # 3. 缓存Cargo依赖（加速构建）
