@@ -15,43 +15,36 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v4
 
-      # 2. 安装sqlite3（用于执行数据库初始化命令）
-      - name: 安装sqlite3
-        run: sudo apt-get update && sudo apt-get install -y sqlite3 libsqlite3-ext-icu
-
-      # 3. 配置Rust环境
-      - name: 安装Rust工具链
-        uses: actions-rs/toolchain@v1
+        # 在Arch Linux容器中执行所有构建步骤
+      - name: 在Arch Linux中构建
+        uses: addnab/docker-run-action@v3
         with:
-          toolchain: stable
-          override: true
-          components: rustfmt, clippy
+          image: archlinux:latest  # 使用最新Arch Linux镜像
+          options: |
+            -v ${{ github.workspace }}:/workspace  # 将当前仓库目录挂载到容器内的/workspace
+            -w /workspace  # 容器内的工作目录设为/workspace（与仓库目录同步）
+          run: |
+            # 1. 更新Arch Linux包数据库并安装依赖
+            pacman -Syu --noconfirm  # 强制更新系统（Arch滚动更新特性）
+            pacman -S --noconfirm \
+              base-devel \
+              sqlite \
+              rustup \
+              dioxus-cli \
+              git  # 确保基础工具和依赖安装
+              
+            rustup toolchain add stable
 
-      # 4. 缓存Cargo依赖（加速构建）
-      - name: 缓存Rust依赖
-        uses: Swatinem/rust-cache@v2
-        with:
-          cache-on-failure: true
+            # 2. 缓存Cargo依赖（可选，加速后续构建）
+            export CARGO_HOME=/workspace/.cargo
+            export RUSTUP_HOME=/workspace/.rustup
+            mkdir -p $CARGO_HOME $RUSTUP_HOME
 
-      # 5. 安装Dioxus CLI（用于dx bundle）
-      - name: 安装dioxus-cli
-        run: cargo binstall dioxus-cli
 
-      # 6. 执行自定义部署命令（按你的顺序执行）
-      - name: 执行清理、数据库初始化和构建
-        run: |
-          # 清理旧文件
-          rm -f data.db
-          rm -rf target/dx
-          
-          # 初始化sqlite数据库
-          sqlite3 data.db ".read ./data.sql"
-          
-          # 运行release模式的save_db二进制（带native特性）
-          cargo run --release --features native --bin save_db
-          
-          # 打包Dioxus项目（northstar_gui包，release模式）
-          dx bundle -p novstar_gui -r
+            # 4. 执行你的构建命令（与本地一致）
+            sqlite3 data.db ".read ./data.sql"
+            cargo run --release --features native --bin save_db
+            dx bundle -p novstar_gui -r
 
       # 7. 部署到GitHub Pages（假设dx bundle输出到dist目录，根据实际情况调整）
       - name: 部署到GitHub Pages
