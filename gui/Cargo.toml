@@ -11,7 +11,7 @@ repository = "https://github.com/Dangerise/northstar"
 
 [dependencies]
 bincode = "2.0.1"
-dioxus = { version = "0.7.0" }
+dioxus = { version = "0.7.1" }
 enum-extract-error = "0.1.1"
 enum-extract-macro = "0.1.1"
 futures-util = "0.3.31"

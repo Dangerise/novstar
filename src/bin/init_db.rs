@@ -16,7 +16,7 @@ async fn main() -> eyre::Result<()> {
     let db = "tmp.db";
 
     fs::File::create_new(db)?;
-    let data = Data::from_raw(&fs::read_to_string("./tmp.txt")?).await?;
+    let data = Data::from_raw(&fs::read_to_string("./data.txt")?).await?;
     log::info!("Data inited");
     let mut con = SqliteConnection::connect(db).await?;
     data.save_db(&mut con).await?;

@@ -37,13 +37,12 @@ fn app() -> Element {
     use_context_provider(|| state);
 
     let st = state.clone();
-    let search_engine = use_resource(move || init_engine(st));
-
-    use_context_provider(|| search_engine);
-    let search_engine: Resource<Engine> = use_context();
+    let engine = use_resource(move || init_engine(st));
+    use_context_provider(|| engine);
+    let engine: Resource<Engine> = use_context();
 
     rsx! {
-        if search_engine.read().is_some() {
+        if engine.read().is_some() {
             search_page {}
         } else {
             download_page {}

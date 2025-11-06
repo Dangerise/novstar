@@ -8,7 +8,7 @@ pub struct Data {
 impl Data {
     #[cfg(feature = "native")]
     pub async fn from_raw(text: &str) -> eyre::Result<Self> {
-        const DIV: &str = "\n\u{3000}\u{3000}\n\u{3000}\u{3000}\n\u{3000}\u{3000}";
+        const DIV: &str = "\n\u{3000}\u{3000}\n\u{3000}\u{3000}\n";
         fn parse_book_name(text: &str) -> Option<&str> {
             let text = text.split_once("\n")?.0;
             let left = text.find("《")? + "《".len();
