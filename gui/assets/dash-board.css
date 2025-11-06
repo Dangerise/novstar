@@ -1,0 +1,30 @@
+/* 随机选择按钮容器 - 用于控制位置 */
+.dash-board {
+    text-align: center; /* 按钮居中显示 */
+    margin: 20px 0; /* 上下留出间距，与其他元素分隔 */
+}
+
+/* 随机选择按钮样式 */
+.random-pick-btn {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    /* 确保按钮本身不继承额外的左对齐样式 */
+    display: inline-block;
+}
+
+/* 悬停与点击状态保持不变 */
+.random-pick-btn:hover {
+    background-color: #2563eb;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.random-pick-btn:active {
+    transform: scale(0.98);
+}
