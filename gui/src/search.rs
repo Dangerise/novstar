@@ -46,7 +46,7 @@ pub fn display_book(result: String) -> Element {
     let engine: Resource<Engine> = use_context();
     let rd = engine.read();
     let rd = (*rd).as_ref().unwrap();
-    let list=rd.get_book(&result).unwrap();
+    let list = rd.get_book(&result).unwrap();
     let count = list.clone().count();
     rsx! {
         div { class: "result-item",
@@ -93,10 +93,27 @@ pub fn result_display() -> Element {
 }
 
 #[component]
+pub fn dash_board() -> Element {
+    let random_pick = |_| {
+        let mut engine: Resource<Engine> = use_context();
+        let mut write = engine.try_write().unwrap();
+        let write = (*write).as_mut().unwrap();
+        write.random_pick().unwrap();
+    };
+    rsx! {
+        document::Stylesheet { href: asset!("assets/dash-board.css") }
+        div { class: "dash-board",
+            button { class: "random-pick-btn", onclick: random_pick, "Random Pick" }
+        }
+    }
+}
+
+#[component]
 pub fn search_page() -> Element {
     rsx! {
         h1 { "Search" }
         search_bar {}
+        dash_board {}
         result_display {}
     }
 }

@@ -45,4 +45,13 @@ impl<'a> Engine<'a> {
 
         Ok(())
     }
+    pub fn random_pick(&mut self) -> eyre::Result<()> {
+        use rand::Rng;
+        let mut rng = rand::rng();
+        let len = self.map.len();
+        self.results = (0..13)
+            .map(|_| *self.map.iter().nth(rng.random_range(0..len)).unwrap().0)
+            .collect();
+        Ok(())
+    }
 }
