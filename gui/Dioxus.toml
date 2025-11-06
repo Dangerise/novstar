@@ -5,7 +5,7 @@ pre_compress = false
 
 
 [web.app]
-
+base_path="novstar"
 # HTML title tag content
 title = "Novstar"
 
