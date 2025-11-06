@@ -7,7 +7,7 @@ pre_compress = false
 [web.app]
 
 # HTML title tag content
-title = "scan_gui"
+title = "Novstar"
 
 # include `assets` in web platform
 [web.resource]
