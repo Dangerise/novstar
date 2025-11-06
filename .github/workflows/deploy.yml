@@ -17,7 +17,7 @@ jobs:
               uses: actions/checkout@v4
 
             - name: 安装基本环境
-              run: pacman -Syu --noconfirm && pacman -S sqlite base-devel --noconfirm
+              run: pacman -Syu --noconfirm && pacman -S sqlite base-devel clang --noconfirm
 
             - name: 安装Rust工具链
               uses: actions-rs/toolchain@v1
