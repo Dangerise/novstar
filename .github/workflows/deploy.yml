@@ -17,9 +17,9 @@ jobs:
             - name: 检出代码
               uses: actions/checkout@v4
 
-            # 2. 安装sqlite3（用于执行数据库初始化命令）
+            # 2. 安装环境
             - name: 安装sqlite3
-              run: pacman -Syu --noconfirm && pacman -S sqlite --noconfirm
+              run: pacman -Syu --noconfirm && pacman -S sqlite --noconfirm && pacman -S base-devel
 
             # 3. 配置Rust环境
             - name: 安装Rust工具链
