@@ -13,15 +13,12 @@ jobs:
             contents: write # 允许写入gh-pages分支
 
         steps:
-            # 1. 拉取仓库代码
             - name: 检出代码
               uses: actions/checkout@v4
 
-            # 2. 安装环境
             - name: 安装基本环境
               run: pacman -Syu --noconfirm && pacman -S sqlite base-devel --noconfirm
 
-            # 3. 配置Rust环境
             - name: 安装Rust工具链
               uses: actions-rs/toolchain@v1
               with:
@@ -29,32 +26,26 @@ jobs:
                   override: true
                   components: rustfmt, clippy
 
-            # 4. 缓存Cargo依赖（加速构建）
             - name: 缓存Rust依赖
               uses: Swatinem/rust-cache@v2
               with:
                   cache-on-failure: true
 
-            # 5. 安装Dioxus CLI（用于dx bundle）
             - name: 安装dioxus-cli
               run: pacman -S dioxus-cli --noconfirm
 
-            # 6. 执行自定义部署命令（按你的顺序执行）
-            - name: 执行清理、数据库初始化和构建
-              run: |
-                  # 初始化sqlite数据库
-                  sqlite3 data.db ".read ./data.sql"
+            - name: 初始化数据库
+              run: sqlite3 data.db ".read ./data.sql"
 
-                  # 运行release模式的save_db二进制（带native特性）
-                  cargo run --release --features native --bin save_db
+            - name: 打包数据
+              run: cargo run --release --features native --bin save_db
+              
+            - name: 打包
+              run: dx bundle -p novstar_gui -r 
 
-                  # 打包Dioxus项目（northstar_gui包，release模式）
-                  dx bundle -p northstar_gui -r
-
-            # 7. 部署到GitHub Pages（假设dx bundle输出到dist目录，根据实际情况调整）
             - name: 部署到GitHub Pages
               uses: peaceiris/actions-gh-pages@v4
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
-                  publish_dir: ./dist # 若dx bundle输出目录不同，需修改此处（如target/dx/bundle）
+                  publish_dir: target/dx/novstar_gui/release/web/public # 若dx bundle输出目录不同，需修改此处（如target/dx/bundle）
                   publish_branch: gh-pages
