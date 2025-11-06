@@ -3,23 +3,12 @@
 [web]
 pre_compress = false
 
-
 [web.app]
-base_path="novstar"
-# HTML title tag content
 title = "Novstar"
 
-# include `assets` in web platform
 [web.resource]
-
-# Additional CSS style files
+script = []
 style = []
 
-# Additional JavaScript files
-script = []
-
 [web.resource.dev]
-
-# Javascript code file
-# serve: [dev-server] only
 script = []

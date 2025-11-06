@@ -3,12 +3,12 @@ use super::*;
 const DATA_ASSET: Asset = asset!("data.bin");
 static DATA: OnceLock<Data> = OnceLock::new();
 
-fn resolve_asset(s: impl ToString) -> reqwest::Url {
-    let origin = web_sys::window().unwrap().origin();
-    let url = reqwest::Url::parse(&origin)
-        .unwrap()
-        .join(s.to_string().as_str())
-        .unwrap();
+fn resolve_asset(s: impl ToString) -> String {
+    let s = s.to_string();
+    let mut url = web_sys::window().unwrap().origin();
+    tracing::info!("origin {}", &url);
+    tracing::info!("asset {}", &s);
+    url.push_str(&s);
     url
 }
 

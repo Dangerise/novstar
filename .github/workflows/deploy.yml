@@ -39,13 +39,26 @@ jobs:
 
             - name: 打包数据
               run: cargo run --release --features native --bin save_db
-              
-            - name: 打包
-              run: dx bundle -p novstar_gui -r 
 
-            - name: 部署到GitHub Pages
+            - name: 打包 Github 版
+              run: dx bundle -p novstar_gui -r --base-path novstar
+
+            - name: 部署到 GitHub Pages
               uses: peaceiris/actions-gh-pages@v4
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   publish_dir: target/dx/novstar_gui/release/web/public # 若dx bundle输出目录不同，需修改此处（如target/dx/bundle）
                   publish_branch: gh-pages
+
+            - name: "清理构建产物"
+              run: rm -rf target/dx
+
+            - name: 打包 Cloudflare 版
+              run: dx bundle -p novstar_gui -r
+              
+            - name: 部署到 cloudflare-pages
+              uses: peaceiris/actions-gh-pages@v4
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: target/dx/novstar_gui/release/web/public # 若dx bundle输出目录不同，需修改此处（如target/dx/bundle）
+                  publish_branch: cloudflare-pages
