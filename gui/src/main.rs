@@ -1,4 +1,4 @@
-use dioxus::logger::tracing::{self, error, Level};
+use dioxus::logger::tracing::{self, Level, error};
 use dioxus::prelude::*;
 
 mod download;
@@ -16,7 +16,6 @@ fn main() {
 }
 
 use novstar::*;
-use std::sync::OnceLock;
 
 #[derive(Debug, Clone, EnumExtract, PartialEq)]
 pub enum State {

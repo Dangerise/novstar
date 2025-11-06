@@ -1,4 +1,5 @@
 use super::*;
+use std::sync::OnceLock;
 
 const DATA_ASSET: Asset = asset!("data.bin");
 static DATA: OnceLock<Data> = OnceLock::new();
@@ -6,8 +7,6 @@ static DATA: OnceLock<Data> = OnceLock::new();
 fn resolve_asset(s: impl ToString) -> String {
     let s = s.to_string();
     let mut url = web_sys::window().unwrap().origin();
-    tracing::info!("origin {}", &url);
-    tracing::info!("asset {}", &s);
     url.push_str(&s);
     url
 }
@@ -33,20 +32,13 @@ pub async fn init_engine(mut state: Signal<State>) -> Engine<'static> {
 
     state.write().as_downloading_mut().unwrap().full = size as u32;
 
-    let mut bytes: Vec<u8> = Vec::with_capacity(size);
 
     let mut stream = reqwest::get(url).await.unwrap().bytes_stream();
-
-    // let mut last = web_time::Instant::now();
-    // for _ in 1..=100 {
-    //     sleep().await;
-    //     let mut s = st.write();
-    //     let s = s.as_downloading_mut().unwrap();
-    //     let d = size as u32 / 100;
-    //     s.loaded += d;
-    //     s.speed = (d as f32) / (last.elapsed().as_secs_f32());
-    //     last = web_time::Instant::now();
-    // }
+    let mut bytes: Vec<u8> = Vec::with_capacity(size);
+    while let Some(item) = stream.next().await {
+        let rec = item.unwrap();
+        bytes.extend_from_slice(&*rec);
+    }
 
     let mut last = web_time::Instant::now();
     while let Some(item) = stream.next().await {

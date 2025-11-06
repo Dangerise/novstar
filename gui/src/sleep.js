@@ -2,5 +2,5 @@ function sleep(time) {
     return new Promise((resolve) => setTimeout(resolve, time));
 }
 
-await sleep(100);
+await sleep(1000);
 return "Okay";
