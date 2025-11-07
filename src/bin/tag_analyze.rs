@@ -1,14 +1,26 @@
+use clap::Parser;
 use novstar::*;
 use sqlx::{Connection, SqliteConnection};
 use std::fs;
 
+#[derive(Parser)]
+#[command(version)]
+struct Cli {
+    #[arg(short, long)]
+    database: String,
+    #[arg(short, long)]
+    out: String,
+}
+
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
+    let Cli { database, out } = Cli::parse();
+
     env_logger::init();
-    
-    let mut con = SqliteConnection::connect("sqlite://data.db").await?;
+
+    let mut con = SqliteConnection::connect(&database).await?;
     let data = Data::from_db(&mut con, true).await?;
-    
+
     log::info!("data init");
 
     let iter = data.comments.iter();
@@ -18,6 +30,6 @@ async fn main() -> eyre::Result<()> {
 
     res.sort_unstable_by(|x, y| x.1.cmp(&y.1).reverse());
 
-    fs::write("key.json", serde_json::to_string_pretty(&res)?)?;
+    fs::write(out, serde_json::to_string_pretty(&res)?)?;
     Ok(())
 }
