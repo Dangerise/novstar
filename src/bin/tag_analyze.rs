@@ -14,8 +14,6 @@ async fn main() -> eyre::Result<()> {
     let iter = data.comments.iter();
     let res = tag_analyze(iter.collect());
 
-    // dbg!(&res);
-    
     let mut res: Vec<_> = res.into_iter().filter(|(_, y)| *y >= 100).collect();
 
     res.sort_unstable_by(|x, y| x.1.cmp(&y.1).reverse());

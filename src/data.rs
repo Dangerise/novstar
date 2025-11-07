@@ -52,17 +52,18 @@ impl Data {
                 let words = jb.cut(&comment.content, true);
                 log::info!("{idx} cuted");
                 let mut delta = Vec::with_capacity(words.len());
-                delta.push(0);
-                for i in 1..words.len() {
-                    let mut d = words[i].as_ptr() as usize - words[i - 1].as_ptr() as usize;
+                let mut sum = 0;
+                for w in &words {
+                    let mut d = w.len();
+                    sum += d;
                     while d >= u8::MAX as usize {
                         d -= u8::MAX as usize;
                         delta.push(u8::MAX);
                     }
                     delta.push(d as u8);
                 }
+                assert!(sum == comment.content.len());
                 comment.words_cut = Some(delta);
-                assert_eq!(comment.words().unwrap(), words);
                 log::info!("{idx} done");
 
                 let mut lock = count.lock().unwrap();
@@ -79,37 +80,38 @@ impl Data {
 
         let mut txn = con.begin().await?;
 
-        let f = async {
-            sqlx::query(include_str!("create_table.sql"))
-                .execute(&mut *txn)
+        let f = async |txn: &mut sqlx::Transaction<'_, sqlx::Sqlite>| {
+            sqlx::query(include_str!("create_comments.sql"))
+                .execute(&mut **txn)
                 .await?;
 
-            for comment in &self.comments {
+            for (idx, comment) in self.comments.iter().enumerate() {
                 let Comment {
                     book_name,
                     content,
                     words_cut,
                 } = comment;
                 if let Some(words_cut) = words_cut {
-                    sqlx::query(include_str!("insert3.sql"))
+                    sqlx::query(include_str!("insert_comment4.sql"))
+                        .bind(idx as i32)
                         .bind(book_name)
                         .bind(content)
                         .bind(words_cut)
-                        .execute(&mut *txn)
+                        .execute(&mut **txn)
                         .await?;
                 } else {
-                    sqlx::query(include_str!("insert2.sql"))
+                    sqlx::query(include_str!("insert_comment3.sql"))
+                        .bind(idx as i32)
                         .bind(book_name)
                         .bind(content)
-                        .execute(&mut *txn)
+                        .execute(&mut **txn)
                         .await?;
                 }
             }
             Ok::<(), eyre::Report>(())
-        }
-        .await;
+        };
 
-        match f {
+        match f(&mut txn).await {
             Ok(()) => {
                 txn.commit().await?;
                 Ok(())
@@ -119,28 +121,6 @@ impl Data {
                 Err(err)
             }
         }
-
-        // for comment in &self.comments {
-        //     let Comment {
-        //         book_name,
-        //         content,
-        //         words_cut,
-        //     } = comment;
-        //     if let Some(words_cut) = words_cut {
-        //         sqlx::query(include_str!("insert3.sql"))
-        //             .bind(book_name)
-        //             .bind(content)
-        //             .bind(words_cut)
-        //             .execute(&mut **txn)
-        //             .await?;
-        //     } else {
-        //         sqlx::query(include_str!("insert2.sql"))
-        //             .bind(book_name)
-        //             .bind(content)
-        //             .execute(&mut **txn)
-        //             .await?;
-        //     }
-        // }
     }
 
     #[cfg(feature = "native")]

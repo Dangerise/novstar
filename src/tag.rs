@@ -30,14 +30,10 @@ pub fn tag_analyze(all: Vec<&Comment>) -> DashMap<&str, u32> {
         let words_cut = words_cut.as_ref().unwrap();
         let mut left: usize = 0;
         for i in 0..words_cut.len() {
-            left += words_cut[i] as usize;
             let mut right = left;
             for j in 0..5 {
                 if i + j < words_cut.len() {
-                    right = words_cut
-                        .get(i + j + 1)
-                        .map(|&x| x as usize + right)
-                        .unwrap_or(content.len());
+                    right += words_cut[i + j] as usize;
                     let selected = &content[left..right];
                     if STOP.iter().any(|x| selected.contains(*x)) || selected.chars().count() == 1 {
                         continue;
@@ -45,7 +41,9 @@ pub fn tag_analyze(all: Vec<&Comment>) -> DashMap<&str, u32> {
                     *map.entry(selected).or_default() += 1;
                 }
             }
+            left += words_cut[i] as usize;
         }
+        assert!(left == content.len());
     });
     map
 }

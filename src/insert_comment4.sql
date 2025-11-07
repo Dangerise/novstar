@@ -1,0 +1,1 @@
+INSERT INTO comments (id,book_name,content,words_cut) VALUES ($1,$2,$3,$4)

@@ -29,11 +29,10 @@ impl Comment {
         let cut = self.words_cut.as_ref()?;
         let mut sum = 0;
         let mut words = Vec::with_capacity(cut.len());
-        for i in 0..cut.len() - 1 {
-            sum += cut[i] as usize;
-            words.push(&self.content[sum..sum + cut[i + 1] as usize]);
+        for &w in cut {
+            words.push(&self.content[sum..sum + w as usize]);
+            sum += w as usize;
         }
-        words.push(&self.content[sum + (*cut.last()? as usize)..self.content.len()]);
         Some(words)
     }
 }
