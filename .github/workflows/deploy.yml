@@ -38,7 +38,7 @@ jobs:
               run: sqlite3 data.db ".read ./data.sql"
 
             - name: 打包数据
-              run: cargo run --release --features native --bin save_db
+              run: cargo run --release --features native --bin save_db -- -d data.bin -b gui/data.bin
 
             - name: 打包 Github 版
               run: dx bundle -p novstar_gui -r --base-path novstar
